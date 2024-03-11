@@ -1,0 +1,5 @@
+build/
+.vscode/
+clipper-main/
+pmc-master/
+*.asv
