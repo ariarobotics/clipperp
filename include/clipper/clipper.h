@@ -17,6 +17,7 @@
 #include "clipper/types.h"
 
 #include "clipper/dsd.h"
+#include "clipper/maxclique.h"
 
 namespace clipper {
 
