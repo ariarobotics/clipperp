@@ -3,8 +3,8 @@ from setuptools import setup
 setup(
     name='clipperpluspy',
     version='${PROJECT_VERSION}',
-    author='Parker Lusk',
-    author_email='plusk@mit.edu',
+    author='Kaveh Fathian',
+    author_email='fathian@ariarobotics.com',
     description='Robust data association framework',
     package_dir={'': '${CMAKE_CURRENT_BINARY_DIR}'},
     packages=['clipperpluspy'],

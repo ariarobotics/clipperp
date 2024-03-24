@@ -37,7 +37,7 @@ class Wrapper {
       return std::make_tuple(output, clique, core_numbers, core_bound, node_colors, chromatic_bound);
     }
     
-    static std::tuple<int, unsigned long, std::vector<long>> clique_optimization(const Eigen::MatrixXd& M, 
+    static std::tuple<int, unsigned long, std::vector<long>> clique_optimization_wrapper(const Eigen::MatrixXd& M, 
                                                                 const Eigen::VectorXd& u0){
       unsigned long clique_size = 0;
       std::vector<long> clique;

@@ -14,6 +14,7 @@ Citation
 If you find this code useful in your research, we ask that you cite:
 
 - K. Fathian, T. Summers. "CLIPPER+: A Fast Maximal Clique Algorithm for Robust Global Registration," in IEEE Robotics and Automation Letters, 2024. ([Paper](https://arxiv.org/pdf/2402.15464.pdf))
+
 ```bibtex
 @inproceedings{fathian2024clipper+,
   title={CLIPPER+: A Fast Maximal Clique Algorithm for Robust Global Registration},
@@ -23,6 +24,7 @@ If you find this code useful in your research, we ask that you cite:
   publisher={IEEE}
 }
 ```
+
 Installation
 ---------
 ### Compilation
@@ -45,7 +47,7 @@ The following cmake options are available when building CLIPPER+ :
 
 | Option                  | Description                                                             | Default |
 |-------------------------|-------------------------------------------------------------------------|---------|
-| `BUILD_BINDINGS_PYTHON` | Creates [Python bindings](#python-bindings) for CLIPPER+. | `OFF` |
+| `BUILD_BINDINGS_PYTHON` | Creates [Python 3 bindings](#python-bindings) for CLIPPER+. | `OFF` |
 | `BUILD_BINDINGS_MATLAB` | Creates [MATLAB bindings](#matlab-bindings) for CLIPPER+. | `OFF` |
 | `DEBUG_FLAG`     | Enables debugging output | `OFF` | 
 | `DEBUG_TIMING_FLAG` | Enables timing report | `OFF` |
@@ -53,33 +55,32 @@ The following cmake options are available when building CLIPPER+ :
 | `DEBUG_BUILD_PMC_HEU` | Builds PMC heuristic | `OFF` |
 | `BUILD_TESTS` | Builds Google testsuites | `ON` |
 
-You can customize these preferences by employing the -D flag during the cmake execution. For instance, you can use the command `cmake -D BUILD_BINDINGS_PYTHON=ON` to enable Python bindings.
+You can customize these preferences by employing the -D flag during the cmake execution for each individual flag. For instance, you can use the command `cmake -D BUILD_BINDINGS_PYTHON=ON -D DEBUG_FLAG=ON` to enable Python bindings and enable basic debugging output.
 
-### Python Bindings (Work In Progress)
+### Python Bindings
 
-If Python bindings are built, then the clipper Python module will need to be installed beforehand using Python 3. This can be done by running:
+If Python bindings are built using the `BUILD_BINDINGS_PYTHON` flag (See [Build Configurations](#build-configurations) above), then the generated clipper Python module will need to be installed before it can be imported in any Python 3 program. This can be done by running make:
 
 ```bash
 $ cd ./build
 $ make pip-install
 ```
 
-Or, if running pip directly:s
+Or, if the user wishes to install the module using pip directly:
 ```bash
 $ python3 -m pip install build/bindings/python
 ```
-More details to be posted soon.
-
+A Jupyter Notebook containing a python example can be found in the [`test/python`](test/python) folder
 ### MATLAB Bindings
 
-If MATLAB is installed on your computer and MATLAB bindings are requested (e.g. `cmake -D BUILD_BINDINGS_MATLAB=ON ..`), then cmake will create a bindings/matlab folders with additional directives. By running these commands inside your build folder:
+If MATLAB is installed on your computer and MATLAB bindings are requested using the cmake flag `BUILD_BINDINGS_MATLAB=ON` (See [Build Configurations](#build-configurations) above), then cmake will create a bindings/matlab folders with additional directives. By running these commands inside your build folder:
 ```bashs
 $ cd ./bindings/matlab
 $ make
 ```
 cmake will attempt to find your MATLAB installation and subsequently generate a set of MEX files so that CLIPPER+ can be used from your MATLAB program.
 
-MATLAB test suites can be found [here](test/matlab). For future projects, ensure that all the generated MEX files are located in your current MATLAB path.
+MATLAB test suites can be found in the [`test/matlab`](test/matlab) folder. For future projects, ensure that all the generated MEX files are located in your current MATLAB path.
 
 ### Including as a shared library
 

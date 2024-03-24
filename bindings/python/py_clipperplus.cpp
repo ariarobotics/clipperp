@@ -39,8 +39,7 @@ PYBIND11_MODULE(clipperpluspy, m)
   m.def("clique_corenumber", &Wrapper::clique_corenumber_wrapper,
     "adj"_a, "clique"_a, "core_numbers"_a, "node_colors"_a,
     "Find the core number of nodes in a graph and a heuristic maximum clique.");
-  m.def("clique_optimization", &Wrapper::clique_optimization,
+  m.def("clique_optimization", &Wrapper::clique_optimization_wrapper,
     "M"_a, "u0"_a,
     "Run original clipper on pruned graph");
-  
 }
