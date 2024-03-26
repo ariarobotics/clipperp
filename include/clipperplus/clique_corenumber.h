@@ -20,7 +20,7 @@ namespace clipperplus {
 
 // find heuristic clique using core numbers
 int find_heuristic_clique(const Eigen::MatrixXd& adj, 
-                    const std::vector<int>& core_numbers,
+                    const std::vector<long>& core_numbers,
                     std::vector<int>& clique);
 
 

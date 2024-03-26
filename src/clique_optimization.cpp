@@ -1,5 +1,5 @@
 /**
-compute core number of graph verticeis, and quickly find a miximal clique.
+compute core number of graph vertices, and quickly find a miximal clique.
 Code based on Parallel Maximum Clique Algorithm by Ryan A. Rossi (http://ryanrossi.com/pmc)
 
 Author: kaveh fathian (kavehfathian@gmail.com)

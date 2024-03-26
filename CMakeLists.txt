@@ -92,18 +92,22 @@ target_include_directories(clipperplus PUBLIC
         $<INSTALL_INTERFACE:include>)
 
 # link libraries:
-target_link_libraries(clipperplus PUBLIC
-        OpenMP::OpenMP_CXX
-        Eigen3::Eigen)
+target_link_libraries(clipperplus PUBLIC Eigen3::Eigen)
+target_link_libraries(clipperplus PUBLIC OpenMP::OpenMP_CXX)
+
+
 
 # debug flag  
 if(DEBUG_FLAG)
+        message(STATUS "Enabling debug flag")
         target_compile_definitions(clipperplus PRIVATE DEBUG)
 endif()
 if(DEBUG_OPTIM_FLAG)
+        message(STATUS "Enabling debug optimization flag")
         target_compile_definitions(clipperplus PRIVATE DEBUG_OPTIM)
 endif()
 if(DEBUG_TIMING_FLAG)
+        message(STATUS "Enabling debug timing flag")
         target_compile_definitions(clipperplus PRIVATE DEBUG_TIMING)
 endif()
 
@@ -136,6 +140,7 @@ endif()
 
 # building PMC heuristic algorithm
 if(BUILD_PMC_HEU)
+        message(STATUS "Building PMC heuristic.")
         set(PMC_HUE_SOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/external/pmc/pmc_heuristic.cpp )
 

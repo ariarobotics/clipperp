@@ -1,7 +1,7 @@
 set(PYPKG_DIR "${CMAKE_CURRENT_BINARY_DIR}/clipperpluspy")
 
 pybind11_add_module(py_clipperplus py_clipperplus.cpp)
-target_link_libraries(py_clipperplus PUBLIC clipper)
+target_link_libraries(py_clipperplus PUBLIC clipperplus)
 set_target_properties(py_clipperplus PROPERTIES OUTPUT_NAME "clipperpluspy")
 set_target_properties(py_clipperplus PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PYPKG_DIR}")
 
