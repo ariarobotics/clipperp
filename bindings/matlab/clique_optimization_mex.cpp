@@ -43,8 +43,8 @@ const int nnodes = (useSparse) ? adjs.rows() : adj.rows();
 const auto t1 = std::chrono::high_resolution_clock::now(); // timer
 
 // run clique_optimization:
-int clique_size = 0;
-std::vector<int> clique;
+long unsigned int clique_size = 0;
+std::vector<long int> clique;
 Eigen::MatrixXd M = adj + Eigen::MatrixXd::Identity(nnodes,nnodes);
 Eigen::VectorXd u0 = randvec(nnodes);
 clipperplus::clique_optimization(M, u0, clique_size, clique);

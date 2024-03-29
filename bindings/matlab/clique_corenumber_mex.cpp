@@ -45,8 +45,8 @@ const auto t1 = std::chrono::high_resolution_clock::now(); // timer
 // run clipperplus_clique:
 std::vector<int> clique; // initialize index vector of clique
 clique.reserve(nnodes); // allocate memory
-std::vector<int> core_numbers(nnodes,0); // initialize vector of core numbers
-int core_bound = 0; // initialize max clique upper bound based on max kcore
+std::vector<long int> core_numbers(nnodes,0); // initialize vector of core numbers
+long int core_bound = 0; // initialize max clique upper bound based on max kcore
 int chromatic_bound = 0;; // initialize chromatic number upper bound
 std::vector<int> node_colors(nnodes, 0); // initialize graph node coloring
 
