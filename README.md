@@ -7,7 +7,12 @@ formulated as a graph and solved by finding its maximum clique. This formulation
 The performance of an approximation algorithm is evaluated by its computational complexity (the lower the runtime, the
 better) and solution accuracy (how close the solution is to the maximum clique). Accordingly, the main contribution of 
 CLIPPER+ is outperforming the state-of-the-art in accuracy while maintaining a relatively low runtime. CLIPPER+ builds
-on prior work (PMC <sup>[[1]](#1)</sup> and CLIPPER <sup>[[2]](#2)</sup>) and prunes the graph by removing vertices that have a small core number and cannot be a part of the maximum clique. This will result in a smaller graph, on which the maximum clique can be estimated considerably faster.
+on prior work (PMC <sup>[[2]](#2)</sup> and CLIPPER <sup>[[3]](#3)</sup>) and prunes the graph by removing vertices that have a small core number and cannot be a part of the maximum clique. This will result in a smaller graph, on which the maximum clique can be estimated considerably faster.
+
+Note
+---------
+We are actively optimizing the code and adding new features to this repo.
+ 
 
 Citation
 ---------
@@ -45,9 +50,8 @@ If succesful, tests can be run with the command `./test/tests`
 
 The following cmake options are available when building CLIPPER+ :
 
-| Option                  | Description                                                             | Default |
-|-------------------------|-------------------------------------------------------------------------|---------|
-| `BUILD_BINDINGS_PYTHON` | Creates [Python 3 bindings](#python-bindings) for CLIPPER+. | `OFF` |
+| Option                  | Description                                      K. Fathian, T. Summers, "CLIPPER+: A Graph-Theoretic Framework for Robust Data Association," in *Proc. IEEE Int. Conf. on Robotics and Automation (ICRA)*, 2021, pp. 13828-13834. DOI: 10.1109/ICRA48506.2021.9561069. ([Paper](https://arxiv.org/pdf/2011.10202.pdf)) ([Video](https://youtu.be/QYLHueMhShY)) ([Repository](https://github.com/mit-acl/clipper))
+ndings](#python-bindings) for CLIPPER+. | `OFF` |
 | `BUILD_BINDINGS_MATLAB` | Creates [MATLAB bindings](#matlab-bindings) for CLIPPER+. | `OFF` |
 | `DEBUG_FLAG`     | Enables debugging output | `OFF` | 
 | `DEBUG_TIMING_FLAG` | Enables timing report | `OFF` |
@@ -125,9 +129,11 @@ Then, you can link your project with `clipperplus` using the syntax `target_link
 
 ## Citations
 
-<a id="1">[1]</a> R. A. Rossi, D. F. Gleich, A. H. Gebremedhin, M. M. Patwary, "A Fast Parallel Maximum Clique Algorithm for Large Sparse Graphs and Temporal Strong Components," *arXiv preprint arXiv:1302.6256*, 2013. ([Repository](https://github.com/ryanrossi/pmc))
+<a id="1">[1]</a> K. Fathian, T. Summers. "CLIPPER+: A Fast Maximal Clique Algorithm for Robust Global Registration," in *IEEE Robotics and Automation Letters (RAL)*, 2024. ([Paper](https://arxiv.org/pdf/2402.15464.pdf))
 
-<a id="1">[2]</a> P. C. Lusk, K. Fathian, J. P. How, "CLIPPER: A Graph-Theoretic Framework for Robust Data Association," in *Proc. IEEE Int. Conf. on Robotics and Automation (ICRA)*, 2021, pp. 13828-13834. DOI: 10.1109/ICRA48506.2021.9561069. ([Paper](https://arxiv.org/pdf/2011.10202.pdf)) ([Video](https://youtu.be/QYLHueMhShY)) ([Repository](https://github.com/mit-acl/clipper))
+<a id="1">[2]</a> R. A. Rossi, D. F. Gleich, A. H. Gebremedhin, M. M. Patwary, "A Fast Parallel Maximum Clique Algorithm for Large Sparse Graphs and Temporal Strong Components," *arXiv preprint arXiv:1302.6256*, 2013. ([Repository](https://github.com/ryanrossi/pmc))
+
+<a id="1">[3]</a> P. C. Lusk, K. Fathian, J. P. How, "CLIPPER: A Graph-Theoretic Framework for Robust Data Association," in *Proc. IEEE Int. Conf. on Robotics and Automation (ICRA)*, 2021, pp. 13828-13834. DOI: 10.1109/ICRA48506.2021.9561069. ([Paper](https://arxiv.org/pdf/2011.10202.pdf)) ([Video](https://youtu.be/QYLHueMhShY)) ([Repository](https://github.com/mit-acl/clipper))
 
 Copyright 2024, Kaveh Fathian. All rights reserved.
 		
