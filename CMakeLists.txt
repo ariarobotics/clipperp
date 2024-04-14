@@ -36,6 +36,19 @@ message(STATUS "Eigen Version: ${EIGEN3_VERSION_STRING} ${EIGEN3_VERSION}")
 find_package(OpenMP REQUIRED)
 
 if(BUILD_TESTS)
+
+
+    FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG release-1.10.0
+    )
+
+    FetchContent_MakeAvailable(googletest)
+
+    enable_testing()
+    add_subdirectory(test/cpp_tests/)
+
   FetchContent_Declare(
     googletest
     URL https://github.com/google/googletest/archive/e4fdb87e76b9fc4b01c54ad81aea19d6e994b994.zip
@@ -130,13 +143,6 @@ if(BUILD_BINDINGS_PYTHON)
     message(STATUS "Building Python bindings.")
     add_subdirectory(bindings/python)
 endif()
-
-
-if(BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(test)
-endif()
-
 
 # building PMC heuristic algorithm
 if(BUILD_PMC_HEU)

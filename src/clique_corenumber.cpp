@@ -8,93 +8,71 @@ Author: kaveh fathian (fathian@ariarobotics.com)
 
 namespace clipperplus {
 
-// find heuristic clique using core numbers
+// ALGORITHM 1: DEGENERACY-ORDERED GREEDY MAXIMAL CLIQUE HEURISTIC
 int find_heuristic_clique(const Eigen::MatrixXd& adj, 
                           const std::vector<long>& core_numbers,
                           std::vector<int>& clique) {
-    const long nnodes = adj.cols(); // number of nodes
+    
+    const int nnodes = adj.cols(); // number of nodes
 
     // if graph has no edges, return trivial clique
     if (adj.sum() == 0) { 
         clique.push_back(0);
         return 1;
-        }
+    }
+    // Line 3, initialize max value to 0
+    int max_val = 0; 
+    std::vector<std::pair<int,long>> nodes; // .first = id, .second = core number
+    nodes.reserve(nnodes);
+    for(int i = 0; i < nnodes; i++){
+        nodes.emplace_back(i, core_numbers[i]);
+    }
 
-    long max_val = 0;
+    //Line 5, sort vertices in decending order by core number
+    std::stable_sort(nodes.begin(),nodes.end(), [&](std::pair<int,long> a, std::pair<int,long> b) {
+        return a.second > b.second; });
 
-    // order of nodes in decreasing core number
-    std::vector<int> node_order(core_numbers.size());
-    std::iota(node_order.begin(), node_order.end(), 0); // initialize node_order with sequential integers from 0 to core_numbers.size()-1
-    std::stable_sort(node_order.begin(), node_order.end(), [&core_numbers](int a, int b) {
-        return core_numbers[a] > core_numbers[b]; });
-
-    for (int i : node_order) {
-
-        if (core_numbers[i] > max_val) { 
-        // subset of neighbors of node 'i' with core numbers >= max_val    
-        std::vector<int> nb_idx; // index of nonzero elements on row 'i'
-        nb_idx.reserve(nnodes); // reserve memory
-        for (int j=0; j<nnodes; ++j) { 
-            if (adj(i,j) != 0) {
-                nb_idx.push_back(j);
-            }
-        }
-
-        std::vector<int> select_idx; // index of core_numbers(nb_idx) >= max_val
-        select_idx.reserve(nnodes); // reserve memory
-        for (int k=0; k<nb_idx.size(); ++k) {
-            if (core_numbers[nb_idx[k]] >= max_val) {
-                select_idx.push_back(k);
-            }
-        }
-        std::vector<int> subset_idx;
-        subset_idx.reserve(nnodes); // reserve memory
-        for (int idx : select_idx) {
-            if (idx >= 0 && idx < nb_idx.size()) {
-                subset_idx.push_back(nb_idx[idx]);
-            }
-        }
-
-        if (subset_idx.empty()) {continue;}
-
-        std::vector<int> clq;
-        clq.reserve(nnodes); // reserve memory
-        clq.push_back(i); // initialize clique with node 'i'
-
-        // order selected subset of neighbors in decresing core number
-        std::vector<long> core_numbers_subset_idx;
-        core_numbers_subset_idx.reserve(nnodes); // reserve memory
-        for (int idx : subset_idx) {
-            core_numbers_subset_idx.push_back(core_numbers[idx]);        
-        }
-        std::vector<int> order_innerloop(core_numbers_subset_idx.size());
-        std::iota(order_innerloop.begin(), order_innerloop.end(), 0); // initialize with sequential integers from 0 to size()-1
-        std::stable_sort(order_innerloop.begin(), order_innerloop.end(), [&](int a, int b) {
-            return core_numbers_subset_idx[a] > core_numbers_subset_idx[b];
-        });
-
-        for (int idx : order_innerloop) {
-            int j = subset_idx[idx]; // node index
-            // if node 'j' union with 'clq' is a clique, then add 'j' to 'clq'        
-            bool allElementsTrue = true;
-            for (int idx_clq : clq) {
-                if (adj(j,idx_clq) == 0) {
-                    allElementsTrue = false;
-                    break; // No need to continue checking
+    //Line 6
+    for(std::pair<int,long> node : nodes){
+        //Line 7
+        if(node.second > max_val){
+            // Line 9, neighbors of node i with a core number > max_val
+            std::vector<std::pair<int,long>> nodes_subset; // .first = id, .second = core number
+            for(std::pair<int,long> n : nodes){
+                if(n.second >= max_val && adj(node.first, n.first) != 0){
+                    nodes_subset.push_back(n);
                 }
+            } if(nodes_subset.empty()){continue;}
+
+            //Line 11
+            std::vector<std::pair<int,long>> clq;
+            clq.reserve(nnodes);
+            clq.push_back(node);
+            //Line 12
+            for(std::pair<int,long> n : nodes){
+                bool allElementsTrue = true;
+                //Line 13
+                for(std::pair<int,long> clq_node : clq){
+                    if(adj(n.first, clq_node.first) == 0){
+                        allElementsTrue = false;
+                        break;
+                    }
+                }
+                //Line 14
+                if (allElementsTrue) {clq.push_back(n);}
             }
-            if (allElementsTrue) {clq.push_back(j);} //add 'j' to 'clq'
+
+            //Line 15-16
+            if (clq.size() > max_val) { // store better clique
+                clique.clear();
+                clique.reserve(clq.size());
+                std::transform(clq.begin(), clq.end(), std::back_inserter(clique), [](const std::pair<int,long>& clq_e){ return clq_e.first; });
+                max_val = clq.size();
+            }    
         }
-
-        if (clq.size() > max_val) { // store better clique
-            clique = clq;
-            max_val = clq.size();
-        }    
-        } 
     } 
-
     return 1;
-}
+} //find_heuristic_clique
 
 unsigned long clique_corenumber(const Eigen::MatrixXd& adj,
                       std::vector<int>& clique,
@@ -112,7 +90,7 @@ unsigned long clique_corenumber(const Eigen::MatrixXd& adj,
 
     size_t total_num_edges = 0;
     for (size_t i=0; i<nnodes; i++) {
-        for (size_t j=0; j<nnodes; j++) {
+        for (size_t j=0; j<nnodes; j++) {  //If we switch from PMC at some point we can rewrite this to take advantage of the parallelism in adjacency matrices in unweighted graphs, but there is no way to create the graph for the pmc_graph constructor in a more efficient manner, because their constructor functions basically run this code regardless. 
             if (adj(i,j)==1) {
                 edges.push_back(j);
                 total_num_edges++;

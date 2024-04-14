@@ -3,6 +3,12 @@
 #include <iostream>
 #include <vector>
 #include <Eigen/Dense>
+#include <string>
+
+
+enum Certificate {NONE, PRUNING, KCORE, CHROMATIC};
+
+std::string cert_to_string(Certificate cert);
 
 namespace clipperplus{
 
@@ -13,8 +19,7 @@ int find_index(const std::vector<int>& vec, int val);
 
 void adjmat_to_adjlist(const Eigen::MatrixXd& adj,
                        const int& nnodes,
-                       int* ei,
-                       int* ej);
-
+                       std::vector<int>& ei,
+                       std::vector<int>& ej);
 
 } 

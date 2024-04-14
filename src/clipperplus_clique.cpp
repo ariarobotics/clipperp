@@ -5,15 +5,16 @@ Author: kaveh fathian (kavehfathian@gmail.com)
  */
 
 #include "clipperplus/clipperplus_clique.h"
+#include "clipperplus/utils.h"
 
 namespace clipperplus {
 
 unsigned long clipperplus_clique(const Eigen::MatrixXd& adj,
                        long& clique_size,
                        std::vector<int>& clique,
-                       int& certificate) {
+                       Certificate& certificate) {
     
-    certificate = 0; // initialize to 0
+    certificate = NONE; // initialize to 0
 
     const long nnodes = adj.rows(); // number of graph nodes
     auto nedges = static_cast<int>(adj.sum()/2); 
@@ -24,7 +25,7 @@ unsigned long clipperplus_clique(const Eigen::MatrixXd& adj,
     #endif
     
     // affinity matrix (adjacency matrix+ identity)
-    Eigen::MatrixXd M = adj + Eigen::MatrixXd::Identity(nnodes,nnodes); 
+    Eigen::MatrixXd affinity_matrix = adj + Eigen::MatrixXd::Identity(nnodes,nnodes); 
 
     #ifdef DEBUG_TIMING
         const auto t1 = std::chrono::high_resolution_clock::now(); // timer
@@ -55,7 +56,7 @@ unsigned long clipperplus_clique(const Eigen::MatrixXd& adj,
         #endif
         clique = clique_core;
         clique_size = clique_size_core;
-        certificate = 1; // certified based on pruning heuristic clique
+        certificate = PRUNING; // certified based on pruning heuristic clique
         return clique_size_core;
     } else {
         #ifdef DEBUG
@@ -84,7 +85,7 @@ unsigned long clipperplus_clique(const Eigen::MatrixXd& adj,
     #endif
 
     // pruned graph affinity matrix
-    Eigen::MatrixXd M_pruned = M(idx_keep, idx_keep);
+    Eigen::MatrixXd affinity_matrix_pruned = affinity_matrix(idx_keep, idx_keep);
 
     // create initial vector for optimization
     Eigen::VectorXd u0(idx_keep.size()); ///< initial vector used for local solver
@@ -112,7 +113,7 @@ unsigned long clipperplus_clique(const Eigen::MatrixXd& adj,
     unsigned long clique_size_optim = 0; // initialize size of clique
     
     // find clique on pruned graph via optimization
-    clipperplus::clique_optimization(M_pruned, u0, clique_size_optim, clique_optim_pruned);
+    clipperplus::clique_optimization(affinity_matrix_pruned, u0, clique_size_optim, clique_optim_pruned);
 
     #ifdef DEBUG_TIMING
         const auto t4 = std::chrono::high_resolution_clock::now(); 
@@ -158,12 +159,12 @@ unsigned long clipperplus_clique(const Eigen::MatrixXd& adj,
     }
     
     if (clique_size == core_bound) {
-        certificate = 2; // certified based on max kcore 
+        certificate = KCORE; // certified based on max kcore 
         #ifdef DEBUG
             std::cout << "max clique found; certified by max kcore." << std::endl;
         #endif
     } else if (clique_size == chromatic_bound) {
-        certificate = 3; // certified based on chromatic number
+        certificate = CHROMATIC; // certified based on chromatic number
         #ifdef DEBUG
             std::cout << "max clique found; certified by chromatic number." << std::endl;
         #endif
