@@ -75,9 +75,12 @@ set(CLIPPER_SOURCE_FILES
         
 set(CLLIPPER_PLUS_SOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/clipperplus_clique.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/clipperplus_graph.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/clique_corenumber.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/clique_optimization.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/utils.cpp )
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/clipperplus_heuristic.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/utils.cpp
+)
 
 # source files
 add_library(clipperplus SHARED)
