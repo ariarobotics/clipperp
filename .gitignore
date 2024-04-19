@@ -2,5 +2,7 @@ build/
 .vscode/
 clipper-main/
 pmc-master/
-examples/data/
+examples/data/7-Scenes
+examples/data/ETH
+examples/data/Sun3D
 *.asv
