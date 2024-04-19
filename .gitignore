@@ -2,4 +2,5 @@ build/
 .vscode/
 clipper-main/
 pmc-master/
+examples/data/
 *.asv
