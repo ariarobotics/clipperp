@@ -130,7 +130,7 @@ Then, you can link your project with `clipperplus` using the syntax `target_link
 
 ## Examples
 
-See the "examples" folder to see demos of CLIPPER+ being used for finding maximal cliques and pointcloud registration.
+See the [`examples`](examples) folder to see demos of CLIPPER+ being used for finding maximal cliques and pointcloud registration.
 
 
 ## Citations
