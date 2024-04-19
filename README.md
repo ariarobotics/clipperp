@@ -127,6 +127,12 @@ ExternalProject_Add(clipperplus
 
 Then, you can link your project with `clipperplus` using the syntax `target_link_libraries(yourproject clipperplus)`.
 
+
+### Examples
+
+See the "examples" folder to see demos of CLIPPER+ being used for finding maximal cliques and pointcloud registration.
+
+
 ## Citations
 
 <a id="1">[1]</a> K. Fathian, T. Summers. "CLIPPER+: A Fast Maximal Clique Algorithm for Robust Global Registration," in *IEEE Robotics and Automation Letters (RAL)*, 2024. ([Paper](https://arxiv.org/pdf/2402.15464.pdf))
