@@ -4,7 +4,7 @@ Here you can find example codes for running CLIPPER+ and registering pointclouds
 
 ### Datasets
 
-Download the pointcloud datasets from ([Google Drive](https://drive.google.com/drive/folders/1-SshbPvfBeVXw3r7OazfwO0A1kwNSy23?usp=sharing))
+Download the pointcloud datasets from [Google Drive](https://drive.google.com/drive/folders/1-SshbPvfBeVXw3r7OazfwO0A1kwNSy23?usp=sharing).
 
 Uncompress the dataset and save it in the "data" folder.
 
