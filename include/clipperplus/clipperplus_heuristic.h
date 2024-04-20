@@ -16,6 +16,7 @@ namespace clipperplus
 
 std::vector<Node> find_heuristic_clique(
     const clipperplus::Graph &graph,
+    int upper_bound = -1,
     int lower_bound = 0
 );
 

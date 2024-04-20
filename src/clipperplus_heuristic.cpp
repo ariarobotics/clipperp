@@ -1,4 +1,4 @@
-
+#include "clipperplus/utils.h"
 #include "clipperplus/clipperplus_heuristic.h"
 
 namespace clipperplus
@@ -7,6 +7,7 @@ namespace clipperplus
 
 std::vector<Node> find_heuristic_clique(
     const clipperplus::Graph &graph,
+    int upper_bound,
     int lower_bound
 ) {
     auto kcores = graph.get_core_numbers();
@@ -18,10 +19,11 @@ std::vector<Node> find_heuristic_clique(
     
     for(auto it = ordered_nodes.rbegin(); it != ordered_nodes.rend(); ++it) {
         auto v = *it;
+
         if(kcores[v] < max_clique_size) {
             continue;
         }
-        
+
         std::vector<Node> S;
         for(auto u : graph.neighbors(v)) {
             if(kcores[u] >= max_clique_size) {
@@ -47,10 +49,10 @@ std::vector<Node> find_heuristic_clique(
 
         if(C.size() > max_clique_size) {
             max_clique_size = C.size();
-            max_clique = C;
+            max_clique = std::move(C);
         }
 
-        if(max_clique_size == max_core_number + 1) {
+        if(max_clique_size == upper_bound) {
             break;
         }
     }
@@ -64,7 +66,9 @@ int estimate_chromatic_number(const Graph &graph)
     std::vector<int> node_color(graph.size(), 0);
     auto node_order = graph.get_core_ordering();
 
-    for(auto it = node_order.rbegin(); it != node_order.rend(); ++it) {
+    auto core_numbers = graph.get_core_numbers();
+    
+    for(auto it = node_order.begin(); it != node_order.end(); ++it) {
         auto v = *it;
         std::set<int> neighbor_colors;
 
