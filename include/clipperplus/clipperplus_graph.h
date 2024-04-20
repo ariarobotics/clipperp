@@ -5,11 +5,10 @@
 #include <vector>
 
 
-
 namespace clipperplus
 {
 
-using Node = unsigned int;
+using Node = std::size_t;
 using Edge = std::pair<Node, Node>;
 using Neighborlist = std::vector<Node>;
 
@@ -17,6 +16,7 @@ using Neighborlist = std::vector<Node>;
 class Graph
 {
 public:
+    Graph() = default;
     Graph(Eigen::MatrixXd adj_matrix);
     // static Graph from_list(const std::vector<Neighborlist> &adj_list);
 
@@ -26,9 +26,13 @@ public:
 
     const std::vector<Node> &neighbors(Node v) const;
 
-    bool is_edge(Node u, Node v) const;
+    inline bool is_edge(Node u, Node v) const
+    {
+        return adj_matrix(u, v) != 0;
+    }
 
     void merge(const Graph &g);
+    Graph induced(const std::vector<Node> &nodes) const;
 
     int max_core_number() const;
     const std::vector<int> &get_core_numbers() const;

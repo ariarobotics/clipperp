@@ -19,10 +19,6 @@ Graph::Graph(Eigen::MatrixXd adj) : adj_matrix(std::move(adj)), adj_list(adj_mat
 }
 
 
-bool Graph::is_edge(Node u, Node v) const
-{
-    return adj_matrix(u, v) != 0;
-}
 
 
 const std::vector<Node> &Graph::neighbors(Node v) const 
@@ -58,7 +54,42 @@ void Graph::merge(const Graph &g)
             adj_list[i].end(), 
             g.adj_list[i].begin(), g.adj_list[i].end()
         );
+
+        adj_matrix(i, g.adj_list[i]).setOnes();
     }
+
+    kcore.clear();
+    kcore_ordering.clear();
+}
+
+
+Graph Graph::induced(const std::vector<Node> &nodes) const
+{
+    int n = size();
+
+    auto g = Graph();
+    g.adj_matrix = adj_matrix(nodes, nodes);
+
+
+    std::vector<int> keep(size(), -1);
+    for(Node i = 0; i < nodes.size(); ++i) {
+        keep[nodes[i]] = i;
+    }
+
+    g.adj_list = std::vector<Neighborlist>(nodes.size());
+    for(Node v = 0; v < n; ++v) {
+        if(keep[v] < 0) {
+            continue;
+        }
+
+        for(auto u : neighbors(v)) {
+            if(keep[u] >= 0) {
+                g.adj_list[keep[v]].push_back((Node)keep[u]);
+            }
+        }
+    }
+
+    return g;
 }
 
 
@@ -150,9 +181,12 @@ void Graph::calculate_kcores() const
             auto w = kcore_ordering[pos_w];
 
             // swap their pose and order
-            kcore_ordering[pos[u]] = w;
-            kcore_ordering[pos[w]] = u;
-            std::swap(pos[u], pos[w]);
+            if(w != u) {
+                kcore_ordering[pos[u]] = w;
+                kcore_ordering[pos[w]] = u;
+                std::swap(pos[u], pos[w]);
+            }
+
 
             ++bin[degree[u]];
             --degree[u];
