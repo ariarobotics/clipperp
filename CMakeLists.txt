@@ -59,13 +59,6 @@ FetchContent_MakeAvailable(googletest)
 # Targets
 ###############################################################################
 
-set(PMC_SOURCE_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/pmc/pmc_heu.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/pmc/pmc_cores.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/pmc/pmc_utils.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/pmc/pmc_graph.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/pmc/pmc_clique_utils.cpp )
-
 set(CLIPPER_SOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/external/clipper/clipper.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/external/clipper/utils.cpp
@@ -76,7 +69,6 @@ set(CLIPPER_SOURCE_FILES
 set(CLLIPPER_PLUS_SOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/clipperplus_clique.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/clipperplus_graph.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/clique_corenumber.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/clique_optimization.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/clipperplus_heuristic.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/utils.cpp
@@ -85,7 +77,6 @@ set(CLLIPPER_PLUS_SOURCE_FILES
 # source files
 add_library(clipperplus SHARED)
 target_sources(clipperplus PRIVATE 
-        ${PMC_SOURCE_FILES}
         ${CLIPPER_SOURCE_FILES}        
         ${CLLIPPER_PLUS_SOURCE_FILES} )
 
@@ -123,7 +114,6 @@ target_compile_definitions(clipperplus PUBLIC CLIPPERPLUS_VERSION="${PROJECT_VER
 ###############################################################################
 # Extras
 ###############################################################################
-
 if(BUILD_BINDINGS_MATLAB)
     message(STATUS "Attempting to build MATLAB bindings.")
     add_subdirectory(bindings/matlab)
@@ -138,32 +128,4 @@ endif()
 if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(test)
-endif()
-
-
-# building PMC heuristic algorithm
-if(BUILD_PMC_HEU)
-        message(STATUS "Building PMC heuristic.")
-        set(PMC_HUE_SOURCE_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/pmc/pmc_heuristic.cpp )
-
-        add_library(pmcheu SHARED)
-        target_sources(pmcheu PRIVATE 
-                ${PMC_SOURCE_FILES}
-                ${PMC_HUE_SOURCE_FILES} )
-
-        # headers:
-        target_include_directories(pmcheu PUBLIC
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-                $<INSTALL_INTERFACE:include>)
-
-        # link libraries:
-        target_link_libraries(pmcheu PUBLIC
-                OpenMP::OpenMP_CXX
-                Eigen3::Eigen)
-
-        # debug flag  
-        if(DEBUG_FLAG)
-                target_compile_definitions(pmcheu PRIVATE DEBUG)
-        endif()
 endif()

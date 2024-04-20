@@ -8,7 +8,7 @@
 namespace clipperplus
 {
 
-using Node = std::size_t;
+using Node = int;
 using Edge = std::pair<Node, Node>;
 using Neighborlist = std::vector<Node>;
 

@@ -7,9 +7,6 @@
 #include <Eigen/Dense>
 
 #include "clipperplus/clipperplus_graph.h"
-#include "pmc/pmc.h"
-#include "pmc/pmc_neigh_coloring.h"
-
 
 namespace clipperplus 
 {
