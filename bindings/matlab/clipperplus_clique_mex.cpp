@@ -44,10 +44,8 @@ const int nnodes = (useSparse) ? adjs.rows() : adj.rows();
 const auto t1 = std::chrono::high_resolution_clock::now(); // timer
 
 // run clipperplus_clique:
-long clique_size = 0;
-std::vector<int> clique;
-int certificate = 0;
-clipperplus::clipperplus_clique(adj, clique_size, clique, certificate);
+auto [clique, certificate] = clipperplus::find_clique(adj);
+long clique_size = clique.size();
 
 const auto t2 = std::chrono::high_resolution_clock::now();
 const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);

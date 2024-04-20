@@ -1,5 +1,8 @@
+#include <set>
+
 #include "clipperplus/utils.h"
 #include "clipperplus/clipperplus_heuristic.h"
+
 
 namespace clipperplus
 {
