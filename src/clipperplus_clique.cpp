@@ -42,10 +42,7 @@ std::pair<std::vector<Node>, CERTIFICATE> find_clique(const Graph &graph)
     }
     u0.normalize();
 
-    unsigned long clique_size_optim;
-    std::vector<long> clique_optim_pruned;
-    clipperplus::clique_optimization(M_pruned, u0, clique_size_optim, clique_optim_pruned);
-
+    auto clique_optim_pruned = clipperplus::clique_optimization(M_pruned, u0, Params());
     std::vector<Node> optimal_clique;
     if(clique_optim_pruned.size() < heuristic_clique.size()) {
         optimal_clique = heuristic_clique;

@@ -59,13 +59,6 @@ FetchContent_MakeAvailable(googletest)
 # Targets
 ###############################################################################
 
-set(CLIPPER_SOURCE_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/clipper/clipper.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/clipper/utils.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/clipper/dsd.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/clipper/invariants/euclidean_distance.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/clipper/invariants/pointnormal_distance.cpp )
-        
 set(CLLIPPER_PLUS_SOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/clipperplus_clique.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/clipperplus_graph.cpp
@@ -76,9 +69,7 @@ set(CLLIPPER_PLUS_SOURCE_FILES
 
 # source files
 add_library(clipperplus SHARED)
-target_sources(clipperplus PRIVATE 
-        ${CLIPPER_SOURCE_FILES}        
-        ${CLLIPPER_PLUS_SOURCE_FILES} )
+target_sources(clipperplus PRIVATE ${CLLIPPER_PLUS_SOURCE_FILES})
 
 # headers:
 target_include_directories(clipperplus PUBLIC
