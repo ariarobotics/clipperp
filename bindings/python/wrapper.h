@@ -29,10 +29,8 @@ class Wrapper {
       const Eigen::MatrixXd& M, 
       const Eigen::VectorXd& u0
     ){
-      unsigned long clique_size = 0;
-      std::vector<long> clique;
-      int output = clipperplus::clique_optimization(M, u0, clique_size, clique);
-      return std::make_tuple(output, clique_size, clique);
+      std::vector<long> clique = clipperplus::clique_optimization(M, u0, clipperplus::Params());
+      return std::make_tuple(1, clique.size(), clique);
     }
 
 };

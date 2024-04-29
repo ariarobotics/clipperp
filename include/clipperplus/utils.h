@@ -4,17 +4,25 @@
 #include <vector>
 #include <Eigen/Dense>
 
-namespace clipperplus{
+namespace clipperplus::utils
+{
 
-// find the index of an element in an std::vector of integers 
-// that is equal to a given value by iterating through the 
-// vector and checking each element. 
-int find_index(const std::vector<int>& vec, int val);
+/**
+ * @brief      Select the elements of a vector x given an indicator vector.
+ *
+ * @param[in]  x     Vector to select elements of
+ * @param[in]  ind   The indicator vector
+ *
+ * @return     Vector of selected elements, with size <= x.size
+ */
+Eigen::VectorXd selectFromIndicator(
+    const Eigen::VectorXd& x,
+    const Eigen::VectorXi& ind);
 
-void adjmat_to_adjlist(const Eigen::MatrixXd& adj,
-                       const int& nnodes,
-                       int* ei,
-                       int* ej);
 
 
-} 
+std::vector<long> findIndicesWhereAboveThreshold(
+    const Eigen::VectorXd& x,
+    double thr
+);
+}
