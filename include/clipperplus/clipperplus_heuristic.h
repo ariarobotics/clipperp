@@ -18,8 +18,6 @@ std::vector<Node> find_heuristic_clique(
 );
 
 
-int estimate_chromatic_number(const Graph &graph);
-
 int estimate_chormatic_number_welsh_powell(const Graph &graph);
 
 
