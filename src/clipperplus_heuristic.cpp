@@ -64,33 +64,6 @@ std::vector<Node> find_heuristic_clique(
 }
 
 
-int estimate_chromatic_number(const Graph &graph)
-{
-    std::vector<int> node_color(graph.size(), 0);
-    auto node_order = graph.get_core_ordering();
-
-    auto core_numbers = graph.get_core_numbers();
-    
-    for(auto it = node_order.begin(); it != node_order.end(); ++it) {
-        auto v = *it;
-        std::set<int> neighbor_colors;
-
-        for(auto u : graph.neighbors(v)) {
-            neighbor_colors.insert(node_color[u]);
-        }
-
-        int color = 1;
-        while(neighbor_colors.count(color) > 0) {
-            ++color;
-        }
-
-        node_color[v] = color;
-    }
-
-    return *std::max_element(node_color.begin(), node_color.end());
-}
-
-
 int estimate_chormatic_number_welsh_powell(const Graph &graph)
 {
     std::vector<int> node_color(graph.size(), -1);

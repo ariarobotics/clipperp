@@ -17,8 +17,7 @@ enum class CERTIFICATE
     NONE,
     HEURISTIC,
     CORE_BOUND,
-    CHROMATIC_BOUND,
-    CHORMATIC_WELSH
+    CHROMATIC_BOUND
 };
 
 std::pair<std::vector<Node>, CERTIFICATE> find_clique(const Graph &graph);
