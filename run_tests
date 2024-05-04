@@ -1,11 +1,8 @@
 #!/bin/bash
 
-cmake -S . -B build -DBUILD_TESTS=ON &&
-
+cmake -S . -B build -DBUILD_TESTS=ON
 cmake --build build &&
-
-cd build &&
-
-ctest || true # Continue even if ctest fails
+	cd build &&
+	ctest || true # Continue even if ctest fails
 
 ./test/cpp_tests/tests # Adjusted path

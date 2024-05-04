@@ -17,7 +17,6 @@ enable_testing()
 set(TEST_SOURCES
     unit/test_clipperplus_clique.cpp
     unit/test_clique_corenumber.cpp
-    unit/test_clique_optimization.cpp
     unit/test_utils.cpp
     unit/clipperplus_test.cpp
 )

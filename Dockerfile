@@ -3,11 +3,11 @@ FROM gcc:latest
 
 # Install required packages
 RUN apt-get update && apt-get install -y \
-    cmake \
-    libeigen3-dev \
-    libomp-dev \
-    git \
- && rm -rf /var/lib/apt/lists/*
+  cmake \
+  libeigen3-dev \
+  libomp-dev \
+  git \
+  && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory in the container
 WORKDIR /usr/src/clipperplus
