@@ -35,10 +35,11 @@ std::vector<Node> find_heuristic_clique(
         }
         assert(S.size() >= max_clique_size);
 
+        /*
         std::stable_sort(S.begin(), S.end(), [&](Node a, Node b) {
             return kcores[a] > kcores[b];
         });
-
+        */
         std::vector<Node> C = { v };
         for(auto u : S) {
             auto connected = std::all_of(C.begin(), C.end(), [&](Node v){
