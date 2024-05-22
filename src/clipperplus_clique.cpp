@@ -26,7 +26,7 @@ std::pair<std::vector<Node>, CERTIFICATE> find_clique(const Graph &graph)
     std::vector<int> core_number = graph.get_core_numbers();
     std::vector<int> keep, keep_pos(n, -1);
     for(Node i = 0, j = 0; i < n; ++i) {
-        if(core_number[i] >= heuristic_clique.size()) {
+        if(core_number[i] + 1 >= heuristic_clique.size()) {
             keep.push_back(i);
             keep_pos[i] = j++;
         }
