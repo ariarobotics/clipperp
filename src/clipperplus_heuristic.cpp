@@ -18,7 +18,7 @@ std::vector<Node> find_heuristic_clique(
     auto max_core_number = graph.max_core_number();
 
     std::vector<Node> max_clique;
-    int max_clique_size = lower_bound;   
+    Weight max_clique_size = lower_bound;   
     
     for(auto it = ordered_nodes.rbegin(); it != ordered_nodes.rend(); ++it) {
         auto v = *it;
@@ -28,7 +28,7 @@ std::vector<Node> find_heuristic_clique(
         }
 
         std::vector<Node> S;
-        for(auto u : graph.neighbors(v)) {
+        for(auto [u, _] : graph.neighbors(v)) {
             if(kcores[u] >= max_clique_size) {
                 S.push_back(u);
             }
@@ -50,8 +50,12 @@ std::vector<Node> find_heuristic_clique(
             }
         }
 
-        if(C.size() > max_clique_size) {
-            max_clique_size = C.size();
+        Weight c_size = *std::min_element(C.begin(), C.end(), [&](Node v, Node u) {
+            return kcores[v] > kcores[u];
+        });
+
+        if(c_size > max_clique_size) {
+            max_clique_size = c_size;
             max_clique = std::move(C);
         }
 

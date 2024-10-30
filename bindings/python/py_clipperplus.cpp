@@ -14,8 +14,8 @@
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
 
-#include "clipper/clipper.h"
-#include "clipper/utils.h"
+// #include "clipper/clipper.h"
+// #include "clipper/utils.h"
 
 #include "wrapper.h"
 
@@ -39,4 +39,6 @@ PYBIND11_MODULE(clipperpluspy, m)
   m.def("clique_optimization", &Wrapper::clique_optimization_wrapper,
     "M"_a, "u0"_a,
     "Run original clipper on pruned graph");
+
+  m.def("kcore", &Wrapper::kcore_wrapper);
 }

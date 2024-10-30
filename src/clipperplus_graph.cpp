@@ -1,6 +1,7 @@
 
 #include "clipperplus/clipperplus_graph.h"
-
+#include <queue>
+#include <iostream>
 
 namespace clipperplus
 {
@@ -12,7 +13,7 @@ Graph::Graph(Eigen::MatrixXd adj) : adj_matrix(std::move(adj)), adj_list(adj_mat
     for(int i = 0; i < nnodes; ++i) {
         for(int j = 0; j < nnodes; ++j) {
             if(adj_matrix(i, j) != 0) {
-                adj_list[i].push_back(j);
+                adj_list[i].push_back({j, adj_matrix(i, j)});
             }
         }
     }
@@ -21,24 +22,28 @@ Graph::Graph(Eigen::MatrixXd adj) : adj_matrix(std::move(adj)), adj_list(adj_mat
 
 
 
-const std::vector<Node> &Graph::neighbors(Node v) const 
+const std::vector<Neighbor> &Graph::neighbors(Node v) const 
 {
     assert(v < adj_list.size());
     return adj_list[v];
 }
 
 
-int Graph::degree(Node v) const 
+Weight Graph::degree(Node v) const 
 {
     assert(v < adj_list.size());
-    return adj_list[v].size();
+    Weight sum = 0;
+    for(const auto [v, w] : adj_list[v]) {
+        sum += w;
+    }
+    return sum;
 }
 
 
-std::vector<int> Graph::degrees() const
+std::vector<Weight> Graph::degrees() const
  {
     int nnodes = adj_list.size();
-    std::vector<int> degrees(adj_list.size());
+    std::vector<Weight> degrees(adj_list.size());
     for(int i = 0; i < nnodes; ++i) {
         degrees[i] = degree(i);
     }
@@ -55,7 +60,9 @@ void Graph::merge(const Graph &g)
             g.adj_list[i].begin(), g.adj_list[i].end()
         );
 
-        adj_matrix(i, g.adj_list[i]).setOnes();
+        for(auto [u, w] : g.adj_list[i]) {
+            adj_matrix(i, u) = w;
+        }
     }
 
     kcore.clear();
@@ -82,9 +89,9 @@ Graph Graph::induced(const std::vector<Node> &nodes) const
             continue;
         }
 
-        for(auto u : neighbors(v)) {
+        for(auto [u, w] : neighbors(v)) {
             if(keep[u] >= 0) {
-                g.adj_list[keep[v]].push_back((Node)keep[u]);
+                g.adj_list[keep[v]].push_back({keep[u], w});
             }
         }
     }
@@ -99,7 +106,7 @@ int Graph::size() const
 }
 
 
-int Graph::max_core_number() const
+Weight Graph::max_core_number() const
 {
     if(kcore.empty()) {
         calculate_kcores();
@@ -108,7 +115,7 @@ int Graph::max_core_number() const
 }
 
 
-const std::vector<int> &Graph::get_core_numbers() const
+const std::vector<Weight> &Graph::get_core_numbers() const
 {
     if(kcore.empty()) {
         calculate_kcores();
@@ -134,68 +141,49 @@ const Eigen::MatrixXd &Graph::get_adj_matrix() const
 
 void Graph::calculate_kcores() const
 {
-    int n = size();
-    auto degree = degrees();
-    auto max_degree = *std::max_element(degree.begin(), degree.end());
+    // only cause std::priority queue donsn't support decrese-key
+    const int n = size();
+    std::vector<bool> removed(n, false);
 
-    // prepare for bucket sort by degree
-    // pos[i] is the position of v_i on the sorted array
-    // If you consider `pos` as an permutation `order` essentially is pos^-1
-    std::vector<int> pos(n, 0);
-    kcore_ordering.resize(n);
+    auto degrees = this->degrees();
+    kcore.resize(n);
 
-    std::vector<int> bin(max_degree + 1, 0);
-    for(auto d : degree) {
-        ++bin[d];
+    using HeapElement = std::tuple<Weight, Node>; 
+    
+    std::priority_queue<
+        HeapElement, std::vector<HeapElement>, std::greater<HeapElement>
+    > queue;
+
+    for(auto node = 0; node < n; ++node) {
+        queue.push({degrees[node], node});
     }
 
-    int start = 0;
-    for(int d = 0; d < max_degree + 1; ++d) {
-        auto num = bin[d];
-        bin[d] = start;
-        start += num;
-    }
+    Weight k = 0;
+    while(!queue.empty()) {
+        auto [_, node] = queue.top(); 
+        queue.pop();
+        if(removed[node]) { // decrece key instead of this
+            continue;
+        }
+        removed[node] = true;
 
-    // bucket sort:
-    for(int v = 0; v < n; ++v) {
-        pos[v] = bin[degree[v]];
-        kcore_ordering[pos[v]] = v;
-        ++bin[degree[v]];
-    }
+        k = std::max(k, degrees[node]);        
+        kcore[node] = k;
 
-    for(int d = max_degree; d > 0; --d) {
-        bin[d] = bin[d - 1];
-    }
-    bin[0] = 0;
-
-    // iteratively remove edges from v with lowest degree
-    for(auto v : kcore_ordering) {
-        for(auto u : neighbors(v)) { // remove e = (v, u)
-            if(degree[v] >= degree[u]) {
-                continue;
-            }
-
-            // update sorted array: pos, order bin
-            // find first element in sorted array with d[w] = d[u]
-            auto pos_w = bin[degree[u]];
-            auto w = kcore_ordering[pos_w];
-
-            // swap their pose and order
-            if(w != u) {
-                kcore_ordering[pos[u]] = w;
-                kcore_ordering[pos[w]] = u;
-                std::swap(pos[u], pos[w]);
-            }
-
-
-            ++bin[degree[u]];
-            --degree[u];
+        for(auto &[neighbor, weight] : neighbors(node)) {
+            degrees[neighbor] -= weight;
+            queue.push({degrees[neighbor], neighbor}); // decrece key instead
         }
     }
 
-    kcore = std::move(degree);
+    kcore_ordering.clear();
+    for(auto node = 0; node < n; ++node) {
+        kcore_ordering.push_back(node);
+    }
+    std::sort(kcore_ordering.begin(), kcore_ordering.end(), 
+        [this](Node a, Node b) { return kcore[a] < kcore[b]; }
+    );
 }
-
 
 }
 

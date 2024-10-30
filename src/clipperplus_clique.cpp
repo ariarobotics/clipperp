@@ -11,22 +11,33 @@ namespace clipperplus
 {
 
 
+Weight weighted_clique_size(const Graph &graph, std::vector<Node> &clique)
+{
+    std::vector<Weight> degrees = graph.induced(clique).degrees();
+    Weight min_deg = *std::min_element(degrees.begin(), degrees.end());
+    return min_deg;
+}
+
+
 std::pair<std::vector<Node>, CERTIFICATE> find_clique(const Graph &graph)
 {
     int n = graph.size();
 
-    auto chromatic_welsh = estimate_chormatic_number_welsh_powell(graph);
-    auto k_core_bound = graph.max_core_number() + 1;
+    // auto chromatic_welsh = estimate_chormatic_number_welsh_powell(graph);
+    auto k_core_bound = graph.max_core_number();
+    std::vector<Weight> core_number = graph.get_core_numbers();
 
-    auto heuristic_clique = find_heuristic_clique(graph);    
-    if(heuristic_clique.size() == std::min({k_core_bound, chromatic_welsh})) {
+
+    auto heuristic_clique = find_heuristic_clique(graph); 
+    auto heuristic_clique_size = weighted_clique_size(graph, heuristic_clique);
+
+    if(heuristic_clique_size == k_core_bound) {
         return {heuristic_clique, CERTIFICATE::HEURISTIC};
     }
 
-    std::vector<int> core_number = graph.get_core_numbers();
     std::vector<int> keep, keep_pos(n, -1);
     for(Node i = 0, j = 0; i < n; ++i) {
-        if(core_number[i] + 1 >= heuristic_clique.size()) {
+        if(core_number[i] > heuristic_clique_size) {
             keep.push_back(i);
             keep_pos[i] = j++;
         }
@@ -43,9 +54,13 @@ std::pair<std::vector<Node>, CERTIFICATE> find_clique(const Graph &graph)
     }
     u0.normalize();
 
+    M_pruned = M_pruned / M_pruned.maxCoeff();
     auto clique_optim_pruned = clipperplus::clique_optimization(M_pruned, u0, Params());
     std::vector<Node> optimal_clique;
-    if(clique_optim_pruned.size() < heuristic_clique.size()) {
+
+    Weight clique_optim_pruned_size = weighted_clique_size(graph, clique_optim_pruned);
+
+    if(clique_optim_pruned_size < heuristic_clique_size) {
         optimal_clique = heuristic_clique;
     } else {
         for(auto v : clique_optim_pruned) {
@@ -58,8 +73,6 @@ std::pair<std::vector<Node>, CERTIFICATE> find_clique(const Graph &graph)
     auto certificate = CERTIFICATE::NONE;
     if(optimal_clique.size() == k_core_bound) {
         certificate = CERTIFICATE::CORE_BOUND;
-    } else if(optimal_clique.size() == chromatic_welsh) {
-        certificate = CERTIFICATE::CHROMATIC_BOUND;
     }
 
     return {optimal_clique, certificate};
