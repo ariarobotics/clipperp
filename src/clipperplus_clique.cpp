@@ -11,14 +11,6 @@ namespace clipperplus
 {
 
 
-Weight weighted_clique_size(const Graph &graph, std::vector<Node> &clique)
-{
-    std::vector<Weight> degrees = graph.induced(clique).degrees();
-    Weight min_deg = *std::min_element(degrees.begin(), degrees.end());
-    return min_deg;
-}
-
-
 std::pair<std::vector<Node>, CERTIFICATE> find_clique(const Graph &graph)
 {
     int n = graph.size();
@@ -35,7 +27,7 @@ std::pair<std::vector<Node>, CERTIFICATE> find_clique(const Graph &graph)
         return {heuristic_clique, CERTIFICATE::HEURISTIC};
     }
 
-    std::vector<int> keep, keep_pos(n, -1);
+    std::vector<Node> keep, keep_pos(n, -1);
     for(Node i = 0, j = 0; i < n; ++i) {
         if(core_number[i] > heuristic_clique_size) {
             keep.push_back(i);
@@ -43,7 +35,8 @@ std::pair<std::vector<Node>, CERTIFICATE> find_clique(const Graph &graph)
         }
     }
 
-    Eigen::MatrixXd M_pruned = graph.get_adj_matrix()(keep, keep);
+    Graph graph_pruned = graph.induced(keep);
+    Eigen::MatrixXd M_pruned = graph_pruned.get_adj_matrix();
     M_pruned.diagonal().setOnes();
 
     Eigen::VectorXd u0 = Eigen::VectorXd::Ones(keep.size());
@@ -58,7 +51,7 @@ std::pair<std::vector<Node>, CERTIFICATE> find_clique(const Graph &graph)
     auto clique_optim_pruned = clipperplus::clique_optimization(M_pruned, u0, Params());
     std::vector<Node> optimal_clique;
 
-    Weight clique_optim_pruned_size = weighted_clique_size(graph, clique_optim_pruned);
+    Weight clique_optim_pruned_size = weighted_clique_size(graph_pruned, clique_optim_pruned);
 
     if(clique_optim_pruned_size < heuristic_clique_size) {
         optimal_clique = heuristic_clique;

@@ -7,6 +7,13 @@
 namespace clipperplus
 {
 
+Weight weighted_clique_size(const Graph &graph, std::vector<Node> &clique)
+{
+    std::vector<Weight> degrees = graph.induced(clique).degrees();
+    Weight min_deg = *std::min_element(degrees.begin(), degrees.end());
+    return min_deg;
+}
+
 
 std::vector<Node> find_heuristic_clique(
     const clipperplus::Graph &graph,
@@ -50,9 +57,7 @@ std::vector<Node> find_heuristic_clique(
             }
         }
 
-        Weight c_size = *std::min_element(C.begin(), C.end(), [&](Node v, Node u) {
-            return kcores[v] > kcores[u];
-        });
+        Weight c_size = weighted_clique_size(graph, C);
 
         if(c_size > max_clique_size) {
             max_clique_size = c_size;

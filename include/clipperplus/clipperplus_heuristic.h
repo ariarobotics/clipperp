@@ -20,5 +20,6 @@ std::vector<Node> find_heuristic_clique(
 
 int estimate_chormatic_number_welsh_powell(const Graph &graph);
 
+Weight weighted_clique_size(const Graph &graph, std::vector<Node> &clique);
 
 } 
