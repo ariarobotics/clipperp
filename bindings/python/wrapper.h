@@ -33,5 +33,20 @@ class Wrapper {
       return std::make_tuple(1, clique.size(), clique);
     }
 
+
+    static std::vector<int> tcore_heuristic(const Eigen::MatrixXd& adj) {
+      std::vector<int> triangle_core = clipperplus::Graph(adj).get_triangle_core();
+
+      int max_tcore = *std::max_element(triangle_core.begin(), triangle_core.end());
+      std::vector<int> heuristic_clique;
+      for (int i = 0; i < triangle_core.size(); ++i) {
+        if (triangle_core[i] == max_tcore) {
+          heuristic_clique.push_back(i);
+        }
+      }
+
+      return heuristic_clique;
+    }
+
 };
 

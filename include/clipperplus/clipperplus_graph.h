@@ -40,12 +40,23 @@ public:
     
     const Eigen::MatrixXd &get_adj_matrix() const;
 
+    const std::vector<Node> &get_triangle_core() const;
+    const std::vector<int> &get_triangle_core_ordering() const;
+    
+    void calculate_triangle_core() const;
+
+
 private:
     void calculate_kcores() const;
 
 private:
     Eigen::MatrixXd adj_matrix;
     std::vector<Neighborlist> adj_list;
+
+    mutable std::vector<Node> triangle_core_ordering;
+    mutable std::vector<int> triangle_core;
+
+
 
     mutable std::vector<Node> kcore_ordering;
     mutable std::vector<int> kcore;

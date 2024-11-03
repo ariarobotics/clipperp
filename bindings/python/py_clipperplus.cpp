@@ -39,4 +39,6 @@ PYBIND11_MODULE(clipperpluspy, m)
   m.def("clique_optimization", &Wrapper::clique_optimization_wrapper,
     "M"_a, "u0"_a,
     "Run original clipper on pruned graph");
+
+  m.def("tcore_heuristic", &Wrapper::tcore_heuristic);
 }
