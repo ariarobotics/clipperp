@@ -50,8 +50,17 @@ long int core_bound = 0; // initialize max clique upper bound based on max kcore
 int chromatic_bound = 0;; // initialize chromatic number upper bound
 std::vector<int> node_colors(nnodes, 0); // initialize graph node coloring
 
-clipperplus::clique_corenumber(adj, clique, core_numbers, 
-                              core_bound, node_colors, chromatic_bound);
+clipperplus::Graph g(adj);
+for(int i = 0; i < nnodes; i++) {
+    core_numbers[i] = g.get_core_numbers()[i];
+}
+
+core_bound = g.max_core_number() + 1;
+chromatic_bound = clipperplus::estimate_chormatic_number_welsh_powell(g);
+clique = clipperplus::find_heuristic_clique(g, core_bound < chromatic_bound ? core_bound : chromatic_bound);
+
+// clipperplus::clique_corenumber(adj, clique, core_numbers, 
+//                               core_bound, node_colors, chromatic_bound);
 
 long clique_size = clique.size();
 

@@ -14,8 +14,8 @@
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
 
-#include "clipper/clipper.h"
-#include "clipper/utils.h"
+// #include "clipper/clipper.h"
+// #include "clipper/utils.h"
 
 #include "wrapper.h"
 
